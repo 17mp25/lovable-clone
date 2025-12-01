@@ -18,23 +18,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private AuthService authService;
-    private UserService userService;
-@PostMapping("/signUp")
-    public ResponseEntity<AuthResponse> signUp(SignUpRequest request){
+    private final AuthService authService;
+    private final UserService userService;
+
+    @PostMapping("/signUp")
+    public ResponseEntity<AuthResponse> signUp(SignUpRequest request) {
         return ResponseEntity.ok(authService.signUp(request));
 
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(LoginRequest request){
+    public ResponseEntity<AuthResponse> login(LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
 
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserProfileResponse> getProfile(){
-    Long userId = 1L;
+    public ResponseEntity<UserProfileResponse> getProfile() {
+        Long userId = 1L;
         return ResponseEntity.ok(userService.getProfile());
     }
 }
