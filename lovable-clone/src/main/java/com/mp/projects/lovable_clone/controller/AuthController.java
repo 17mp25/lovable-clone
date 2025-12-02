@@ -35,7 +35,7 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<UserProfileResponse> getProfile() {
-        Long userId = 1L;
+        Long userId = 1L;//During Spring Security we will get it from Context holder
         return ResponseEntity.ok(userService.getProfile());
     }
 }

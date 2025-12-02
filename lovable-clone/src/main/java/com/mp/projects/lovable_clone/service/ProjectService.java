@@ -1,4 +1,19 @@
 package com.mp.projects.lovable_clone.service;
 
+import com.mp.projects.lovable_clone.dto.auth.project.ProjectRequest;
+import com.mp.projects.lovable_clone.dto.auth.project.ProjectResponse;
+import com.mp.projects.lovable_clone.dto.auth.project.ProjectSummaryResponse;
+
+import java.util.List;
+
 public interface ProjectService {
+    List<ProjectSummaryResponse> getUserProjects(Long userId);
+
+    ProjectResponse getUserProjectById(Long id, Long userId);
+
+    ProjectResponse createProject(ProjectRequest request, Long userId);
+
+    ProjectResponse updateProject(Long id, ProjectRequest request, Long userId);
+
+    Void softDelete(Long id, Long userId);
 }
