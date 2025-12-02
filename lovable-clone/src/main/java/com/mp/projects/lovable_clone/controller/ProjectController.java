@@ -1,8 +1,8 @@
 package com.mp.projects.lovable_clone.controller;
 
-import com.mp.projects.lovable_clone.dto.auth.project.ProjectRequest;
-import com.mp.projects.lovable_clone.dto.auth.project.ProjectResponse;
-import com.mp.projects.lovable_clone.dto.auth.project.ProjectSummaryResponse;
+import com.mp.projects.lovable_clone.dto.project.ProjectRequest;
+import com.mp.projects.lovable_clone.dto.project.ProjectResponse;
+import com.mp.projects.lovable_clone.dto.project.ProjectSummaryResponse;
 import com.mp.projects.lovable_clone.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,8 +1,8 @@
 package com.mp.projects.lovable_clone.service;
 
-import com.mp.projects.lovable_clone.dto.auth.project.ProjectRequest;
-import com.mp.projects.lovable_clone.dto.auth.project.ProjectResponse;
-import com.mp.projects.lovable_clone.dto.auth.project.ProjectSummaryResponse;
+import com.mp.projects.lovable_clone.dto.project.ProjectRequest;
+import com.mp.projects.lovable_clone.dto.project.ProjectResponse;
+import com.mp.projects.lovable_clone.dto.project.ProjectSummaryResponse;
 
 import java.util.List;
 

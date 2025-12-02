@@ -1,4 +1,4 @@
-package com.mp.projects.lovable_clone.dto.auth.project;
+package com.mp.projects.lovable_clone.dto.project;
 
 import com.mp.projects.lovable_clone.dto.auth.UserProfileResponse;
 
