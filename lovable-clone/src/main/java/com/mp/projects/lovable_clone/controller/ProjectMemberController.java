@@ -2,6 +2,7 @@ package com.mp.projects.lovable_clone.controller;
 
 import com.mp.projects.lovable_clone.dto.member.InviteMemberRequest;
 import com.mp.projects.lovable_clone.dto.member.MemberResponse;
+import com.mp.projects.lovable_clone.dto.member.UpdateMemberRoleRequest;
 import com.mp.projects.lovable_clone.service.ProjectMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class ProjectMemberController {
     }
 
     @PatchMapping("/{memberId}")
-    public ResponseEntity<MemberResponse> updateMemberRole(@PathVariable Long projectId, @PathVariable Long memberId, @RequestBody InviteMemberRequest request) {
+    public ResponseEntity<MemberResponse> updateMemberRole(@PathVariable Long projectId, @PathVariable Long memberId, @RequestBody UpdateMemberRoleRequest request) {
         Long userId = 1L;
         return ResponseEntity.ok(projectMemberService.updateMemberRole(projectId, memberId, request, userId));
     }
