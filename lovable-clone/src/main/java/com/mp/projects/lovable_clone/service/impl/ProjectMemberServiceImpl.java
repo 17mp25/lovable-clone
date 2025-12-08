@@ -8,6 +8,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Fetch project members visible to the logged-in user.
+ * <p>
+ * Business Logic to implement:
+ * 1. Validate the project exists.
+ * 2. Check if userId is part of the project (authorization).
+ * 3. Fetch all members from project_member table.
+ * 4. Map entity -> MemberResponse DTO.
+ * 5. Return the list.
+ */
 @Service
 public class ProjectMemberServiceImpl implements ProjectMemberService {
     @Override
