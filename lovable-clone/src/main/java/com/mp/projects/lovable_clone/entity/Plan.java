@@ -1,5 +1,6 @@
 package com.mp.projects.lovable_clone.entity;
 
+import jakarta.persistence.Entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity
 public class Plan // Different types of Plan user can opt for, and Plan which are available
 {
     Long id;
