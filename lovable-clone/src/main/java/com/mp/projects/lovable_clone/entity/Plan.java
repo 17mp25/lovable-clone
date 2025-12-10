@@ -14,9 +14,6 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity
-@Builder
-
 public class Plan // Different types of Plan user can opt for, and Plan which are available
 {
     Long id;

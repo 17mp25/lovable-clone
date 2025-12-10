@@ -3,17 +3,17 @@ spring:
     name: lovable-clone
     description: This is a Lovable clone project
 
-#  datasource:
-#    url: jdbc:postgresql://localhost:9000/testDB
-#    username: testUser
-#    password: password
-#    driver-class-name: org.postgresql.Driver
-
   datasource:
-    url: jdbc:postgresql://localhost:5432/testDB
-    username: postgres
-    password: 1234
+    url: jdbc:postgresql://localhost:9000/testDB
+    username: testUser
+    password: password
     driver-class-name: org.postgresql.Driver
+
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/testDB
+#    username: postgres
+#    password: 1234
+#    driver-class-name: org.postgresql.Driver
 
 
   jpa:
