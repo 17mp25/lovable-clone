@@ -3,7 +3,11 @@ package com.mp.projects.lovable_clone.service.impl;
 import com.mp.projects.lovable_clone.dto.member.InviteMemberRequest;
 import com.mp.projects.lovable_clone.dto.member.MemberResponse;
 import com.mp.projects.lovable_clone.dto.member.UpdateMemberRoleRequest;
+import com.mp.projects.lovable_clone.repository.ProjectMemberRepository;
 import com.mp.projects.lovable_clone.service.ProjectMemberService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +23,12 @@ import java.util.List;
  * 5. Return the list.
  */
 @Service
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class ProjectMemberServiceImpl implements ProjectMemberService {
+
+    ProjectMemberRepository projectMemberRepository;
+
     @Override
     public List<MemberResponse> getProjectMembers(Long projectId, Long userId) {
         return List.of();

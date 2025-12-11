@@ -47,7 +47,18 @@ public class Project {
     // Timestamp when the project details were last updated
 
     Instant deletedAt;
+
     // Soft delete timestamp:
     // null  = active
     // not null = project considered deleted (not shown to user, but record kept)
+    @PrePersist
+    protected void onCreate() {
+        createdAt = Instant.now();
+        updatedAt = Instant.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = Instant.now();
+    }
 }
