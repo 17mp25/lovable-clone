@@ -5,5 +5,5 @@ package com.mp.projects.lovable_clone.enums;
  * Determines the level of access and permissions a user has.
  */
 public enum ProjectRole {
-    EDITOR, VIEWER
+    EDITOR, VIEWER, OWNER
 }
