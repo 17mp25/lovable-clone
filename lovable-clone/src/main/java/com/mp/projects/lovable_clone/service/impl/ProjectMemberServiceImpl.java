@@ -55,13 +55,15 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
 
     @Override
     public MemberResponse inviteMember(Long projectId, InviteMemberRequest request, Long userId) {
+
         Project project = getAccessibleProjectById(projectId, userId);
-        if (!project.getOwner().equals(userId)) {
+
+        if (!project.getOwner().getId().equals(userId)) {
             throw new RuntimeException("Not Allowed");
         }
 
         User invitee = userRepository.findByEmail(request.email()).orElseThrow();
-        if (invitee.equals(userId)) {
+        if (invitee.getId().equals(userId)) {
             throw new RuntimeException("Cannot invite yourself");
         }
 
@@ -73,8 +75,8 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         ProjectMember projectMember = ProjectMember.builder()
                 .id(projectMemberId)
                 .project(project)
-                .role(request.role())
                 .user(invitee)
+                .projectRole(request.role())
                 .invitedAt(Instant.now())
                 .build();
         projectMemberRepository.save(projectMember);

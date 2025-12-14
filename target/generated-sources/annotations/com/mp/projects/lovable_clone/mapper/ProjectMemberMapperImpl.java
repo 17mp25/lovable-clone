@@ -1,0 +1,87 @@
+package com.mp.projects.lovable_clone.mapper;
+
+import com.mp.projects.lovable_clone.dto.member.MemberResponse;
+import com.mp.projects.lovable_clone.entity.ProjectMember;
+import com.mp.projects.lovable_clone.entity.User;
+import com.mp.projects.lovable_clone.enums.ProjectRole;
+import java.time.Instant;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = "org.mapstruct.ap.MappingProcessor",
+    date = "2025-12-14T19:37:42+0530",
+    comments = "version: 1.6.0, compiler: javac, environment: Java 22.0.2 (Oracle Corporation)"
+)
+@Component
+public class ProjectMemberMapperImpl implements ProjectMemberMapper {
+
+    @Override
+    public MemberResponse toProjectMemberResponseFromOwner(User owner) {
+        if ( owner == null ) {
+            return null;
+        }
+
+        Long userId = null;
+        String email = null;
+        String name = null;
+
+        userId = owner.getId();
+        email = owner.getEmail();
+        name = owner.getName();
+
+        ProjectRole projectRole = ProjectRole.OWNER;
+        Instant invitedAt = null;
+
+        MemberResponse memberResponse = new MemberResponse( userId, email, name, projectRole, invitedAt );
+
+        return memberResponse;
+    }
+
+    @Override
+    public MemberResponse toProjectMemberResponseFromMember(ProjectMember projectMember) {
+        if ( projectMember == null ) {
+            return null;
+        }
+
+        Long userId = null;
+        String email = null;
+        String name = null;
+        ProjectRole projectRole = null;
+        Instant invitedAt = null;
+
+        userId = projectMemberUserId( projectMember );
+        email = projectMemberUserEmail( projectMember );
+        name = projectMemberUserName( projectMember );
+        projectRole = projectMember.getProjectRole();
+        invitedAt = projectMember.getInvitedAt();
+
+        MemberResponse memberResponse = new MemberResponse( userId, email, name, projectRole, invitedAt );
+
+        return memberResponse;
+    }
+
+    private Long projectMemberUserId(ProjectMember projectMember) {
+        User user = projectMember.getUser();
+        if ( user == null ) {
+            return null;
+        }
+        return user.getId();
+    }
+
+    private String projectMemberUserEmail(ProjectMember projectMember) {
+        User user = projectMember.getUser();
+        if ( user == null ) {
+            return null;
+        }
+        return user.getEmail();
+    }
+
+    private String projectMemberUserName(ProjectMember projectMember) {
+        User user = projectMember.getUser();
+        if ( user == null ) {
+            return null;
+        }
+        return user.getName();
+    }
+}

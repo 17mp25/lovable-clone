@@ -36,7 +36,7 @@ public class ProjectMember {
     // The user who is part of the project
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
-    ProjectRole role;
+    ProjectRole projectRole;
     // Role assigned to the member inside the project
     // e.g., OWNER, EDITOR, VIEWER
 
