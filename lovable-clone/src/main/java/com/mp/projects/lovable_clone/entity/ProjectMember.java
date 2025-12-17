@@ -1,5 +1,6 @@
 package com.mp.projects.lovable_clone.entity;
 
+import com.mp.projects.lovable_clone.enums.InviteStatus;
 import com.mp.projects.lovable_clone.enums.ProjectRole;
 import jakarta.persistence.*;
 import lombok.*;
@@ -39,6 +40,9 @@ public class ProjectMember {
     ProjectRole projectRole;
     // Role assigned to the member inside the project
     // e.g., OWNER, EDITOR, VIEWER
+
+    @Enumerated(EnumType.STRING)
+    private InviteStatus inviteStatus;
 
     Instant invitedAt;
     // Timestamp when the user was invited to join the project
