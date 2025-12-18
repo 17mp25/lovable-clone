@@ -7,6 +7,7 @@ import com.mp.projects.lovable_clone.entity.Project;
 import com.mp.projects.lovable_clone.entity.ProjectMember;
 import com.mp.projects.lovable_clone.entity.ProjectMemberId;
 import com.mp.projects.lovable_clone.entity.User;
+import com.mp.projects.lovable_clone.enums.InviteStatus;
 import com.mp.projects.lovable_clone.mapper.ProjectMemberMapper;
 import com.mp.projects.lovable_clone.repository.ProjectMemberRepository;
 import com.mp.projects.lovable_clone.repository.ProjectRepository;
@@ -79,6 +80,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
                 .project(project)
                 .user(invitee)
                 .projectRole(request.role())
+                .inviteStatus(InviteStatus.PENDING)
                 .invitedAt(Instant.now())
                 .build();
         projectMemberRepository.save(projectMember);
@@ -113,6 +115,17 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         }
         projectMemberRepository.deleteById(projectMemberId);
 
+    }
+
+    @Override
+    public MemberResponse getMyInvite(Long projectId, Long userId) {
+        ProjectMember projectMember = projectMemberRepository.findByIdProjectIdAndIdUserId(projectId, userId).orElseThrow(() -> new RuntimeException("Invitee not found"));
+
+        if (projectMember.getInviteStatus() != InviteStatus.PENDING) {
+            throw new RuntimeException("No pending Invite");
+        }
+
+        return projectMemberMapper.toProjectMemberResponseFromMember(projectMember);
     }
 
     public Project getAccessibleProjectById(Long projectId, Long userId) {
