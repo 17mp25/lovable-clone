@@ -50,7 +50,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         List<MemberResponse> memberResponseList = new ArrayList<>();
         memberResponseList.add(projectMemberMapper.toProjectMemberResponseFromOwner(project.getOwner()));
 
-        memberResponseList.addAll(projectMemberRepository.findByIdProjectId(projectId)
+        memberResponseList.addAll(projectMemberRepository.findByIdProjectIdAndInviteStatus(projectId, InviteStatus.ACCEPTED)
                 .stream()
                 .map(projectMemberMapper::toProjectMemberResponseFromMember).toList());
         return memberResponseList;
