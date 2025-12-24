@@ -119,7 +119,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
 
     @Override
     public MemberResponse getMyInvite(Long projectId, Long userId) {
-        ProjectMember projectMember = projectMemberRepository.findByIdProjectIdAndIdUserId(projectId, userId).orElseThrow(() -> new RuntimeException("Invitee not found"));
+        ProjectMember projectMember = projectMemberRepository.findByIdProjectIdAndIdUserId(projectId, userId).orElseThrow(() -> new RuntimeException("Invite not found"));
 
         if (projectMember.getInviteStatus() != InviteStatus.PENDING) {
             throw new RuntimeException("No pending Invite");
