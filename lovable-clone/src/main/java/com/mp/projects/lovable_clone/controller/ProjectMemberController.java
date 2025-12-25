@@ -54,4 +54,10 @@ public class ProjectMemberController {
         return ResponseEntity.ok(projectMemberService.acceptInvite(projectId,userId));
     }
 
+    @PostMapping("/invite/reject")
+    public ResponseEntity<MemberResponse> rejectInvite(@PathVariable Long projectId){
+        Long userId = 3L;
+        return ResponseEntity.ok(projectMemberService.rejectInvite(projectId,userId));
+    }
+
 }

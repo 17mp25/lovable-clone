@@ -18,4 +18,6 @@ public interface ProjectMemberService {
     MemberResponse getMyInvite(Long projectId, Long userId);
 
     MemberResponse acceptInvite(Long projectId, Long userId);
+
+    MemberResponse rejectInvite(Long projectId, Long userId);
 }
