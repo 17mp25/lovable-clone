@@ -128,6 +128,22 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         return projectMemberMapper.toProjectMemberResponseFromMember(projectMember);
     }
 
+    @Override
+    public MemberResponse acceptInvite(Long projectId, Long userId) {
+        ProjectMember projectMember = projectMemberRepository.findByIdProjectIdAndIdUserId(projectId, userId).orElseThrow(() -> new RuntimeException("Invite not found"));
+
+        if(projectMember.getInviteStatus()!= InviteStatus.PENDING){
+            throw new RuntimeException("Invite Already accepted");
+        }
+
+        projectMember.setInviteStatus(InviteStatus.ACCEPTED);
+        projectMember.setAcceptedAt(Instant.now());
+
+        projectMemberRepository.save(projectMember);
+
+        return projectMemberMapper.toProjectMemberResponseFromMember(projectMember);
+    }
+
     public Project getAccessibleProjectById(Long projectId, Long userId) {
         return projectRepository.findAccessibleProjectById(projectId, userId).orElseThrow();
     }
