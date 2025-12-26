@@ -65,17 +65,38 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
             throw new RuntimeException("Not Allowed");
         }
 
-        User invitee = userRepository.findByEmail(request.email()).orElseThrow();
+        User invitee = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         if (invitee.getId().equals(userId)) {
             throw new RuntimeException("Cannot invite yourself");
         }
 
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId, invitee.getId());
-        if (projectMemberRepository.existsById(projectMemberId)) {
-            throw new RuntimeException("User already exists, cannot add again");
+
+        ProjectMember projectMember = projectMemberRepository
+                .findById(projectMemberId)
+                .orElse(null);
+
+        if (projectMember != null) {
+            if (projectMember.getInviteStatus() == InviteStatus.PENDING) {
+                throw new RuntimeException("Invite already sent");
+            }
+            if (projectMember.getInviteStatus() == InviteStatus.ACCEPTED) {
+                throw new RuntimeException("User already a member");
+            }
+
+            // REJECTED → re-invite
+            projectMember.setInviteStatus(InviteStatus.PENDING);
+            projectMember.setInvitedAt(Instant.now());
+            projectMember.setProjectRole(request.role());
+
+            projectMemberRepository.save(projectMember);
+            return projectMemberMapper.toProjectMemberResponseFromMember(projectMember);
         }
 
-        ProjectMember projectMember = ProjectMember.builder()
+        // Fresh invite
+        ProjectMember newMember = ProjectMember.builder()
                 .id(projectMemberId)
                 .project(project)
                 .user(invitee)
@@ -83,8 +104,9 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
                 .inviteStatus(InviteStatus.PENDING)
                 .invitedAt(Instant.now())
                 .build();
-        projectMemberRepository.save(projectMember);
-        return projectMemberMapper.toProjectMemberResponseFromMember(projectMember);
+
+        projectMemberRepository.save(newMember);
+        return projectMemberMapper.toProjectMemberResponseFromMember(newMember);
     }
 
     @Override
