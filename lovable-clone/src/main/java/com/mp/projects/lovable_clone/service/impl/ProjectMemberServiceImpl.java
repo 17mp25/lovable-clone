@@ -116,8 +116,12 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         if (!project.getOwner().getId().equals(userId)) {
             throw new RuntimeException("Not Allowed");
         }
+
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId, memberId);
         ProjectMember projectMember = projectMemberRepository.findById(projectMemberId).orElseThrow();
+        if (projectMember.getInviteStatus() != InviteStatus.ACCEPTED) {
+            throw new RuntimeException("Cannot update role for non-active member");
+        }
         projectMember.setProjectRole(request.role());
         projectMemberRepository.save(projectMember);
 
@@ -134,6 +138,9 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId, memberId);
         if (!projectMemberRepository.existsById(projectMemberId)) {
             throw new RuntimeException("This User is not a member of this Project");
+        }
+        if (memberId.equals(project.getOwner().getId())) {
+            throw new RuntimeException("Owner cannot be removed");
         }
         projectMemberRepository.deleteById(projectMemberId);
 
@@ -154,8 +161,11 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     public MemberResponse acceptInvite(Long projectId, Long userId) {
         ProjectMember projectMember = projectMemberRepository.findByIdProjectIdAndIdUserId(projectId, userId).orElseThrow(() -> new RuntimeException("Invite not found"));
 
-        if(projectMember.getInviteStatus()!= InviteStatus.PENDING){
-            throw new RuntimeException("Invite Already accepted");
+        if (projectMember.getInviteStatus() == InviteStatus.ACCEPTED) {
+            throw new RuntimeException("Invite already accepted");
+        }
+        if (projectMember.getInviteStatus() == InviteStatus.REJECTED) {
+            throw new RuntimeException("Invite was rejected, ask owner to re-invite");
         }
 
         projectMember.setInviteStatus(InviteStatus.ACCEPTED);
@@ -175,6 +185,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         }
 
         projectMember.setInviteStatus(InviteStatus.REJECTED);
+        projectMember.setAcceptedAt(null);
         projectMemberRepository.save(projectMember);
 
         return projectMemberMapper.toProjectMemberResponseFromMember(projectMember);
