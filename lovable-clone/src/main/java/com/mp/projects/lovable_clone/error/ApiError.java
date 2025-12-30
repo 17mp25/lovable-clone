@@ -1,5 +1,6 @@
 package com.mp.projects.lovable_clone.error;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.http.HttpStatus;
 
 import java.time.Instant;
@@ -9,7 +10,7 @@ public record ApiError(
         HttpStatus status,
         String message,
         Instant timestamp,
-        List<ApiFieldError> apiFieldErrors
+        @JsonInclude(JsonInclude.Include.NON_NULL) List<ApiFieldError> apiFieldErrors
 ) {
     public ApiError(HttpStatus status, String message) {
         this(status, message, Instant.now(), null);
