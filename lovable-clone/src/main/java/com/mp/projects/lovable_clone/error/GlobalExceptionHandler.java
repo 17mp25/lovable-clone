@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
 
         List<ApiFieldError> list = exception.getBindingResult().getFieldErrors()
                 .stream()
-                .map(fieldError -> new ApiFieldError(fieldError.getField(), fieldError.getDefaultMessage()))
+                .map(error -> new ApiFieldError(error.getField(), error.getDefaultMessage()))
                 .toList();
 
         ApiError apiError=new ApiError(HttpStatus.BAD_REQUEST,"Validation Failed", list);
