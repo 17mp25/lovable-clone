@@ -23,7 +23,8 @@ import java.time.Instant;
 @Table(name = "projects",
         indexes = {
                 @Index(name = "idx_projects_updated_at_desc", columnList = "updatedAt DESC, deletedAt"),
-                @Index(name = "idx_prjects_deleted_at", columnList = "deletedAt")
+                @Index(name = "idx_prjects_deleted_at", columnList = "deletedAt"),
+                @Index(name = "idx_projects_owner_id", columnList = "owner_id")
         }
 
 )
