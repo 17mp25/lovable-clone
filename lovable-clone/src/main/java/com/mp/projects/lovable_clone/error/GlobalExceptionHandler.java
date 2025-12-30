@@ -7,6 +7,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.List;
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -27,7 +29,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleInputValidationError(MethodArgumentNotValidException exception){
-        ApiError apiError=new ApiError(HttpStatus.BAD_REQUEST,exception.getLocalizedMessage());
+
+        List<ApiFieldError> list = exception.getBindingResult().getFieldErrors()
+                .stream()
+                .map(fieldError -> new ApiFieldError(fieldError.getField(), fieldError.getDefaultMessage()))
+                .toList();
+
+        ApiError apiError=new ApiError(HttpStatus.BAD_REQUEST,"Validation Failed", list);
         log.error(apiError.toString(),exception);
         return ResponseEntity.status(apiError.status()).body(apiError);
     }
