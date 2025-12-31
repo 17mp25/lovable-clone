@@ -20,11 +20,18 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "projects",
-        indexes = {
-                @Index(name = "idx_projects_updated_at_desc", columnList = "updatedAt DESC, deletedAt"),
-                @Index(name = "idx_projects_deleted_at", columnList = "deletedAt")
-        }
+@Table(
+        name = "projects",
+        indexes = {@Index(
+                name = "idx_projects_updated_at_desc",
+                columnList = "updatedAt DESC, deletedAt"
+        ), @Index(
+                name = "idx_projects_deleted_at_updated_at_desc",
+                columnList = "deletedAt , updatedAt DESC"
+        ), @Index(
+                name = "idx_projects_deleted_at",
+                columnList = "deletedAt"
+        )}
 
 )
 public class Project {
@@ -37,7 +44,10 @@ public class Project {
     // Name of the project (given by the user)
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
+    @JoinColumn(
+            name = "owner_id",
+            nullable = false
+    )
     User owner;
     // The user who created and owns the project
 
