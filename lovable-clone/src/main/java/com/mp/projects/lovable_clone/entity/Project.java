@@ -43,14 +43,6 @@ public class Project {
     String name;
     // Name of the project (given by the user)
 
-    @ManyToOne
-    @JoinColumn(
-            name = "owner_id",
-            nullable = false
-    )
-    User owner;
-    // The user who created and owns the project
-
     Boolean isPublic = false;
     // Visibility of the project:
     // false = private (only owner can view)

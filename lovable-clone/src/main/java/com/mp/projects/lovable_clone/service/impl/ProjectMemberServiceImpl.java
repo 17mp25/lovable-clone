@@ -20,7 +20,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,7 +33,10 @@ import java.util.List;
  * 5. Return the list.
  */
 @Service
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@FieldDefaults(
+        makeFinal = true,
+        level = AccessLevel.PRIVATE
+)
 @RequiredArgsConstructor
 @Transactional
 public class ProjectMemberServiceImpl implements ProjectMemberService {
@@ -47,36 +49,32 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     @Override
     public List<MemberResponse> getProjectMembers(Long projectId, Long userId) {
         Project project = getAccessibleProjectById(projectId, userId);
-        List<MemberResponse> memberResponseList = new ArrayList<>();
-        memberResponseList.add(projectMemberMapper.toProjectMemberResponseFromOwner(project.getOwner()));
+        return projectMemberRepository.findByIdProjectIdAndInviteStatus(
+                        projectId, InviteStatus.ACCEPTED).stream()
+                .map(projectMemberMapper::toProjectMemberResponseFromMember)
+                .toList();
 
-        memberResponseList.addAll(projectMemberRepository.findByIdProjectIdAndInviteStatus(projectId, InviteStatus.ACCEPTED)
-                .stream()
-                .map(projectMemberMapper::toProjectMemberResponseFromMember).toList());
-        return memberResponseList;
     }
 
     @Override
-    public MemberResponse inviteMember(Long projectId, InviteMemberRequest request, Long userId) {
+    public MemberResponse inviteMember(Long projectId,
+                                       InviteMemberRequest request, Long userId)
+    {
 
         Project project = getAccessibleProjectById(projectId, userId);
 
-        if (!project.getOwner().getId().equals(userId)) {
-            throw new RuntimeException("Not Allowed");
-        }
-
-        User invitee = userRepository.findByEmail(request.email())
+        User invitee = userRepository.findByUsername(request.username())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (invitee.getId().equals(userId)) {
             throw new RuntimeException("Cannot invite yourself");
         }
 
-        ProjectMemberId projectMemberId = new ProjectMemberId(projectId, invitee.getId());
+        ProjectMemberId projectMemberId = new ProjectMemberId(projectId,
+                invitee.getId());
 
-        ProjectMember projectMember = projectMemberRepository
-                .findById(projectMemberId)
-                .orElse(null);
+        ProjectMember projectMember = projectMemberRepository.findById(
+                projectMemberId).orElse(null);
 
         if (projectMember != null) {
             if (projectMember.getInviteStatus() == InviteStatus.PENDING) {
@@ -92,17 +90,14 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
             projectMember.setProjectRole(request.role());
 
             projectMemberRepository.save(projectMember);
-            return projectMemberMapper.toProjectMemberResponseFromMember(projectMember);
+            return projectMemberMapper.toProjectMemberResponseFromMember(
+                    projectMember);
         }
 
         // Fresh invite
-        ProjectMember newMember = ProjectMember.builder()
-                .id(projectMemberId)
-                .project(project)
-                .user(invitee)
-                .projectRole(request.role())
-                .inviteStatus(InviteStatus.PENDING)
-                .invitedAt(Instant.now())
+        ProjectMember newMember = ProjectMember.builder().id(projectMemberId)
+                .project(project).user(invitee).projectRole(request.role())
+                .inviteStatus(InviteStatus.PENDING).invitedAt(Instant.now())
                 .build();
 
         projectMemberRepository.save(newMember);
@@ -110,37 +105,37 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public MemberResponse updateMemberRole(Long projectId, Long memberId, UpdateMemberRoleRequest request, Long userId) {
+    public MemberResponse updateMemberRole(Long projectId, Long memberId,
+                                           UpdateMemberRoleRequest request,
+                                           Long userId)
+    {
         Project project = getAccessibleProjectById(projectId, userId);
 
-        if (!project.getOwner().getId().equals(userId)) {
-            throw new RuntimeException("Not Allowed");
-        }
-
-        ProjectMemberId projectMemberId = new ProjectMemberId(projectId, memberId);
-        ProjectMember projectMember = projectMemberRepository.findById(projectMemberId).orElseThrow();
+        ProjectMemberId projectMemberId = new ProjectMemberId(projectId,
+                memberId);
+        ProjectMember projectMember = projectMemberRepository.findById(
+                projectMemberId).orElseThrow();
         if (projectMember.getInviteStatus() != InviteStatus.ACCEPTED) {
-            throw new RuntimeException("Cannot update role for non-active member");
+            throw new RuntimeException(
+                    "Cannot update role for non-active member");
         }
         projectMember.setProjectRole(request.role());
         projectMemberRepository.save(projectMember);
 
-        return projectMemberMapper.toProjectMemberResponseFromMember(projectMember);
+        return projectMemberMapper.toProjectMemberResponseFromMember(
+                projectMember);
     }
 
     @Override
-    public void removeProjectMember(Long projectId, Long memberId, Long userId) {
+    public void removeProjectMember(Long projectId, Long memberId, Long userId)
+    {
         Project project = getAccessibleProjectById(projectId, userId);
 
-        if (!project.getOwner().getId().equals(userId)) {
-            throw new RuntimeException("Not Allowed");
-        }
-        ProjectMemberId projectMemberId = new ProjectMemberId(projectId, memberId);
+        ProjectMemberId projectMemberId = new ProjectMemberId(projectId,
+                memberId);
         if (!projectMemberRepository.existsById(projectMemberId)) {
-            throw new RuntimeException("This User is not a member of this Project");
-        }
-        if (memberId.equals(project.getOwner().getId())) {
-            throw new RuntimeException("Owner cannot be removed");
+            throw new RuntimeException(
+                    "This User is not a member of this Project");
         }
         projectMemberRepository.deleteById(projectMemberId);
 
@@ -148,24 +143,30 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
 
     @Override
     public MemberResponse getMyInvite(Long projectId, Long userId) {
-        ProjectMember projectMember = projectMemberRepository.findByIdProjectIdAndIdUserId(projectId, userId).orElseThrow(() -> new RuntimeException("Invite not found"));
+        ProjectMember projectMember = projectMemberRepository.findByIdProjectIdAndIdUserId(
+                        projectId, userId)
+                .orElseThrow(() -> new RuntimeException("Invite not found"));
 
         if (projectMember.getInviteStatus() != InviteStatus.PENDING) {
             throw new RuntimeException("No pending Invite");
         }
 
-        return projectMemberMapper.toProjectMemberResponseFromMember(projectMember);
+        return projectMemberMapper.toProjectMemberResponseFromMember(
+                projectMember);
     }
 
     @Override
     public MemberResponse acceptInvite(Long projectId, Long userId) {
-        ProjectMember projectMember = projectMemberRepository.findByIdProjectIdAndIdUserId(projectId, userId).orElseThrow(() -> new RuntimeException("Invite not found"));
+        ProjectMember projectMember = projectMemberRepository.findByIdProjectIdAndIdUserId(
+                        projectId, userId)
+                .orElseThrow(() -> new RuntimeException("Invite not found"));
 
         if (projectMember.getInviteStatus() == InviteStatus.ACCEPTED) {
             throw new RuntimeException("Invite already accepted");
         }
         if (projectMember.getInviteStatus() == InviteStatus.REJECTED) {
-            throw new RuntimeException("Invite was rejected, ask owner to re-invite");
+            throw new RuntimeException(
+                    "Invite was rejected, ask owner to re-invite");
         }
 
         projectMember.setInviteStatus(InviteStatus.ACCEPTED);
@@ -173,14 +174,17 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
 
         projectMemberRepository.save(projectMember);
 
-        return projectMemberMapper.toProjectMemberResponseFromMember(projectMember);
+        return projectMemberMapper.toProjectMemberResponseFromMember(
+                projectMember);
     }
 
     @Override
     public MemberResponse rejectInvite(Long projectId, Long userId) {
-        ProjectMember projectMember = projectMemberRepository.findByIdProjectIdAndIdUserId(projectId, userId).orElseThrow(() -> new RuntimeException("Invite not found"));
+        ProjectMember projectMember = projectMemberRepository.findByIdProjectIdAndIdUserId(
+                        projectId, userId)
+                .orElseThrow(() -> new RuntimeException("Invite not found"));
 
-        if(projectMember.getInviteStatus()!=InviteStatus.PENDING){
+        if (projectMember.getInviteStatus() != InviteStatus.PENDING) {
             throw new RuntimeException("Invite Already Rejected");
         }
 
@@ -188,10 +192,12 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         projectMember.setAcceptedAt(null);
         projectMemberRepository.save(projectMember);
 
-        return projectMemberMapper.toProjectMemberResponseFromMember(projectMember);
+        return projectMemberMapper.toProjectMemberResponseFromMember(
+                projectMember);
     }
 
     public Project getAccessibleProjectById(Long projectId, Long userId) {
-        return projectRepository.findAccessibleProjectById(projectId, userId).orElseThrow();
+        return projectRepository.findAccessibleProjectById(projectId, userId)
+                .orElseThrow();
     }
 }

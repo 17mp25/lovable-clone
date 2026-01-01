@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-18T22:08:49+0530",
+    date = "2025-12-31T20:02:39+0530",
     comments = "version: 1.6.0, compiler: javac, environment: Java 22.0.2 (Oracle Corporation)"
 )
 @Component
@@ -23,17 +23,17 @@ public class ProjectMemberMapperImpl implements ProjectMemberMapper {
         }
 
         Long userId = null;
-        String email = null;
+        String username = null;
         String name = null;
 
         userId = owner.getId();
-        email = owner.getEmail();
+        username = owner.getUsername();
         name = owner.getName();
 
         ProjectRole projectRole = ProjectRole.OWNER;
         Instant invitedAt = null;
 
-        MemberResponse memberResponse = new MemberResponse( userId, email, name, projectRole, invitedAt );
+        MemberResponse memberResponse = new MemberResponse( userId, username, name, projectRole, invitedAt );
 
         return memberResponse;
     }
@@ -45,18 +45,18 @@ public class ProjectMemberMapperImpl implements ProjectMemberMapper {
         }
 
         Long userId = null;
-        String email = null;
+        String username = null;
         String name = null;
         ProjectRole projectRole = null;
         Instant invitedAt = null;
 
         userId = projectMemberUserId( projectMember );
-        email = projectMemberUserEmail( projectMember );
+        username = projectMemberUserUsername( projectMember );
         name = projectMemberUserName( projectMember );
         projectRole = projectMember.getProjectRole();
         invitedAt = projectMember.getInvitedAt();
 
-        MemberResponse memberResponse = new MemberResponse( userId, email, name, projectRole, invitedAt );
+        MemberResponse memberResponse = new MemberResponse( userId, username, name, projectRole, invitedAt );
 
         return memberResponse;
     }
@@ -69,12 +69,12 @@ public class ProjectMemberMapperImpl implements ProjectMemberMapper {
         return user.getId();
     }
 
-    private String projectMemberUserEmail(ProjectMember projectMember) {
+    private String projectMemberUserUsername(ProjectMember projectMember) {
         User user = projectMember.getUser();
         if ( user == null ) {
             return null;
         }
-        return user.getEmail();
+        return user.getUsername();
     }
 
     private String projectMemberUserName(ProjectMember projectMember) {
