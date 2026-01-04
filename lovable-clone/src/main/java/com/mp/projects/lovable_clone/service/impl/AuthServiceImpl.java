@@ -53,8 +53,8 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
 
-        User user = (User) authentication.getPrincipal();
-        String token = authUtil.generateAccessToken(user);
-        return new AuthResponse(token, userMapper.toUserProfileResponse(user));
+        User userHere = (User) authentication.getPrincipal();
+        String token = authUtil.generateAccessToken(userHere);
+        return new AuthResponse(token, userMapper.toUserProfileResponse(userHere));
     }
 }
