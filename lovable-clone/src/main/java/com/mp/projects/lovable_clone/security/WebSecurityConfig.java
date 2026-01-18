@@ -12,7 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity){
-        httpSecurity.csrf(csrf->csrf.disable())
+        httpSecurity.csrf(csrf->csrf.notify())
                 .sessionManagement(sessionConfig ->sessionConfig.sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth->auth.requestMatchers("/api/**").permitAll());
