@@ -14,7 +14,7 @@ import java.util.Date;
 @Component
 public class AuthUtil {
 
-    @Value("$(jwt.secret-key)")
+    @Value("${jwt.secret-key}")  // <-- fix the $ syntax
     private String jwtSecretKey;
 
     private SecretKey getSecretKey(){
@@ -31,4 +31,6 @@ public class AuthUtil {
                 .signWith(getSecretKey())
                 .compact();
     }
+
+
 }

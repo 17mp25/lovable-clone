@@ -21,7 +21,7 @@ public record ApiError(
     }
 }
 
-record ApiFieldError(
+ record ApiFieldError(
         String field,
         String message
 ) {
