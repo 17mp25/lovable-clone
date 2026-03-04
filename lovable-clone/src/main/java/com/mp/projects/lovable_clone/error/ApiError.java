@@ -11,7 +11,8 @@ public record ApiError(
         String message,
         Instant timestamp,
         @JsonInclude(JsonInclude.Include.NON_NULL) List<ApiFieldError> apiFieldErrors
-) {
+)
+{
     public ApiError(HttpStatus status, String message) {
         this(status, message, Instant.now(), null);
     }
@@ -21,8 +22,9 @@ public record ApiError(
     }
 }
 
- record ApiFieldError(
+record ApiFieldError(
         String field,
         String message
-) {
+)
+{
 }
