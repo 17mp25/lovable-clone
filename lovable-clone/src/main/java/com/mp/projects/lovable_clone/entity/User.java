@@ -5,8 +5,12 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Represents a user of the Lovable application.
@@ -21,7 +25,7 @@ import java.time.Instant;
 @Builder
 //Used to make all the fields as Private to achieve encapsulation
 @Table(name = "users")
-public class User // User/Person who is using the Lovable application
+public class User implements UserDetails// User/Person who is using the Lovable application
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,6 +52,11 @@ public class User // User/Person who is using the Lovable application
     // Timestamp when the user's profile was last updated
 
     Instant deletedAt;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
     // Soft delete timestamp.
     // If not null → user is considered deleted (inactive) but record remains in DB
 }
