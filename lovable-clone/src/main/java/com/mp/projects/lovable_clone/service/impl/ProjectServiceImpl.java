@@ -13,6 +13,7 @@ import com.mp.projects.lovable_clone.mapper.ProjectMapper;
 import com.mp.projects.lovable_clone.repository.ProjectMemberRepository;
 import com.mp.projects.lovable_clone.repository.ProjectRepository;
 import com.mp.projects.lovable_clone.repository.UserRepository;
+import com.mp.projects.lovable_clone.security.AuthUtil;
 import com.mp.projects.lovable_clone.service.ProjectService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -36,11 +37,15 @@ public class ProjectServiceImpl implements ProjectService {
     UserRepository userRepository;
     ProjectMapper projectMapper;
     ProjectMemberRepository projectMemberRepository;
+    AuthUtil authUtil;
 
     @Override
-    public ProjectResponse createProject(ProjectRequest request, Long userId) {
-        User owner = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User",
-                userId.toString()));
+    public ProjectResponse createProject(ProjectRequest request) {
+        Long userId = authUtil.getCurrentUserId();
+//        User owner = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User",
+//                userId.toString()));
+
+        User owner = userRepository.getReferenceById(userId);// It wont make a DB call immediately, it will return a proxy object. It will make a DB call only when we access any property of the user object. Since we are using the user object to set the project member, it will make a DB call at that time. So we can use getReferenceById to avoid unnecessary DB call if we are not accessing any property of the user object.
 
         Project project = Project.builder()
                 .name(request.name())
@@ -64,21 +69,23 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectSummaryResponse> getUserProjects(Long userId) {
+    public List<ProjectSummaryResponse> getUserProjects() {
+        Long userId = authUtil.getCurrentUserId();
         var allAccessibleUser = projectRepository.findAllAccessibleUser(userId);
         return projectMapper.toListProjectSummaryResponse(allAccessibleUser);
     }
 
     @Override
-    public ProjectResponse getUserProjectById(Long id, Long userId) {
+    public ProjectResponse getUserProjectById(Long id) {
+        Long userId = authUtil.getCurrentUserId();
         Project project = getAccessibleProjectById(id, userId);
         return projectMapper.toProjectResponse(project);
     }
 
     @Override
-    public ProjectResponse updateProject(Long id, ProjectRequest request,
-                                         Long userId)
+    public ProjectResponse updateProject(Long id, ProjectRequest request)
     {
+        Long userId = authUtil.getCurrentUserId();
         Project project = getAccessibleProjectById(id, userId);
         project.setName(request.name());
         Project save = projectRepository.save(project);
@@ -86,7 +93,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void softDelete(Long id, Long userId) {
+    public void softDelete(Long id) {
+        Long userId = authUtil.getCurrentUserId();
         Project project = getAccessibleProjectById(id, userId);
         project.setDeletedAt(Instant.now());
         projectRepository.save(project);

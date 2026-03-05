@@ -12,6 +12,7 @@ import com.mp.projects.lovable_clone.mapper.ProjectMemberMapper;
 import com.mp.projects.lovable_clone.repository.ProjectMemberRepository;
 import com.mp.projects.lovable_clone.repository.ProjectRepository;
 import com.mp.projects.lovable_clone.repository.UserRepository;
+import com.mp.projects.lovable_clone.security.AuthUtil;
 import com.mp.projects.lovable_clone.service.ProjectMemberService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -45,9 +46,11 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     ProjectRepository projectRepository;
     ProjectMemberMapper projectMemberMapper;
     UserRepository userRepository;
+    AuthUtil authUtil;
 
     @Override
-    public List<MemberResponse> getProjectMembers(Long projectId, Long userId) {
+    public List<MemberResponse> getProjectMembers(Long projectId) {
+        Long userId = authUtil.getCurrentUserId();
         Project project = getAccessibleProjectById(projectId, userId);
         return projectMemberRepository.findByIdProjectIdAndInviteStatus(
                         projectId, InviteStatus.ACCEPTED).stream()
@@ -58,8 +61,9 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
 
     @Override
     public MemberResponse inviteMember(Long projectId,
-                                       InviteMemberRequest request, Long userId)
+                                       InviteMemberRequest request)
     {
+        Long userId = authUtil.getCurrentUserId();
 
         Project project = getAccessibleProjectById(projectId, userId);
 
@@ -106,9 +110,9 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
 
     @Override
     public MemberResponse updateMemberRole(Long projectId, Long memberId,
-                                           UpdateMemberRoleRequest request,
-                                           Long userId)
+                                           UpdateMemberRoleRequest request)
     {
+        Long userId = authUtil.getCurrentUserId();
         Project project = getAccessibleProjectById(projectId, userId);
 
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId,
@@ -127,8 +131,9 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public void removeProjectMember(Long projectId, Long memberId, Long userId)
+    public void removeProjectMember(Long projectId, Long memberId)
     {
+        Long userId = authUtil.getCurrentUserId();
         Project project = getAccessibleProjectById(projectId, userId);
 
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId,
@@ -142,7 +147,8 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public MemberResponse getMyInvite(Long projectId, Long userId) {
+    public MemberResponse getMyInvite(Long projectId) {
+        Long userId = authUtil.getCurrentUserId();
         ProjectMember projectMember = projectMemberRepository.findByIdProjectIdAndIdUserId(
                         projectId, userId)
                 .orElseThrow(() -> new RuntimeException("Invite not found"));
@@ -156,7 +162,8 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public MemberResponse acceptInvite(Long projectId, Long userId) {
+    public MemberResponse acceptInvite(Long projectId) {
+        Long userId = authUtil.getCurrentUserId();
         ProjectMember projectMember = projectMemberRepository.findByIdProjectIdAndIdUserId(
                         projectId, userId)
                 .orElseThrow(() -> new RuntimeException("Invite not found"));
@@ -179,7 +186,8 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public MemberResponse rejectInvite(Long projectId, Long userId) {
+    public MemberResponse rejectInvite(Long projectId) {
+        Long userId = authUtil.getCurrentUserId();
         ProjectMember projectMember = projectMemberRepository.findByIdProjectIdAndIdUserId(
                         projectId, userId)
                 .orElseThrow(() -> new RuntimeException("Invite not found"));

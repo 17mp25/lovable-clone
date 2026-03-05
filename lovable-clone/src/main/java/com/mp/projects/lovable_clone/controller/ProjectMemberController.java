@@ -20,45 +20,38 @@ public class ProjectMemberController {
 
     @GetMapping
     public ResponseEntity<List<MemberResponse>> getProjectMembers(@PathVariable Long projectId) {
-        Long userId = 1L;
-        return ResponseEntity.ok(projectMemberService.getProjectMembers(projectId, userId));
+        return ResponseEntity.ok(projectMemberService.getProjectMembers(projectId));
     }
 
     @PostMapping
     public ResponseEntity<MemberResponse> inviteMember(@PathVariable Long projectId, @RequestBody @Valid InviteMemberRequest request) {
-        Long userId = 1L;
-        return ResponseEntity.ok(projectMemberService.inviteMember(projectId, request, userId));
+        return ResponseEntity.ok(projectMemberService.inviteMember(projectId, request));
     }
 
     @PatchMapping("/{memberId}")
     public ResponseEntity<MemberResponse> updateMemberRole(@PathVariable Long projectId, @PathVariable Long memberId, @RequestBody @Valid UpdateMemberRoleRequest request) {
-        Long userId = 1L;
-        return ResponseEntity.ok(projectMemberService.updateMemberRole(projectId, memberId, request, userId));
+        return ResponseEntity.ok(projectMemberService.updateMemberRole(projectId, memberId, request));
     }
 
     @DeleteMapping("/{memberId}")
     public ResponseEntity<Void> removeProjectMember(@PathVariable Long projectId, @PathVariable Long memberId) {
-        Long userId = 1L;
-        projectMemberService.removeProjectMember(projectId, memberId, userId);
+        projectMemberService.removeProjectMember(projectId, memberId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/invitee")
     public ResponseEntity<MemberResponse> getMyInvite(@PathVariable Long projectId) {
-        Long userId = 3L;
-        return ResponseEntity.ok(projectMemberService.getMyInvite(projectId, userId));
+        return ResponseEntity.ok(projectMemberService.getMyInvite(projectId));
     }
 
     @PostMapping("/invite/accept")
     public ResponseEntity<MemberResponse> acceptInvite(@PathVariable Long projectId){
-        Long userId = 3L;
-        return ResponseEntity.ok(projectMemberService.acceptInvite(projectId,userId));
+        return ResponseEntity.ok(projectMemberService.acceptInvite(projectId));
     }
 
     @PostMapping("/invite/reject")
     public ResponseEntity<MemberResponse> rejectInvite(@PathVariable Long projectId){
-        Long userId = 3L;
-        return ResponseEntity.ok(projectMemberService.rejectInvite(projectId,userId));
+        return ResponseEntity.ok(projectMemberService.rejectInvite(projectId));
     }
 
 }
