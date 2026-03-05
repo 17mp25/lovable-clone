@@ -26,21 +26,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     {
         log.info("Incoming request: {} {}", request.getMethod(), request.getRequestURI());
         final String requestTokenHeader = request.getHeader("Authorization");
-        if(requestTokenHeader == null || !requestTokenHeader.startsWith("Bearer ")){
-            filterChain.doFilter(request,response);
+        if (requestTokenHeader == null || !requestTokenHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
             return;
         }
         String jwtToken = requestTokenHeader.split("Bearer ")[1];
 
         JwtUserPrinciple user = authUtil.verifyAccessToken(jwtToken);
 
-        if(user != null && SecurityContextHolder.getContext().getAuthentication()==null){
+        if (user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     user, null, user.authorityList()
             );
 
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            filterChain.doFilter(request,response);
+            filterChain.doFilter(request, response);
 
         }
 

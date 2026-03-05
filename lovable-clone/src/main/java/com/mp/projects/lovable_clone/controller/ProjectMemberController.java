@@ -24,12 +24,16 @@ public class ProjectMemberController {
     }
 
     @PostMapping
-    public ResponseEntity<MemberResponse> inviteMember(@PathVariable Long projectId, @RequestBody @Valid InviteMemberRequest request) {
+    public ResponseEntity<MemberResponse> inviteMember(@PathVariable Long projectId,
+                                                       @RequestBody @Valid InviteMemberRequest request)
+    {
         return ResponseEntity.ok(projectMemberService.inviteMember(projectId, request));
     }
 
     @PatchMapping("/{memberId}")
-    public ResponseEntity<MemberResponse> updateMemberRole(@PathVariable Long projectId, @PathVariable Long memberId, @RequestBody @Valid UpdateMemberRoleRequest request) {
+    public ResponseEntity<MemberResponse> updateMemberRole(@PathVariable Long projectId, @PathVariable Long memberId,
+                                                           @RequestBody @Valid UpdateMemberRoleRequest request)
+    {
         return ResponseEntity.ok(projectMemberService.updateMemberRole(projectId, memberId, request));
     }
 
@@ -45,12 +49,12 @@ public class ProjectMemberController {
     }
 
     @PostMapping("/invite/accept")
-    public ResponseEntity<MemberResponse> acceptInvite(@PathVariable Long projectId){
+    public ResponseEntity<MemberResponse> acceptInvite(@PathVariable Long projectId) {
         return ResponseEntity.ok(projectMemberService.acceptInvite(projectId));
     }
 
     @PostMapping("/invite/reject")
-    public ResponseEntity<MemberResponse> rejectInvite(@PathVariable Long projectId){
+    public ResponseEntity<MemberResponse> rejectInvite(@PathVariable Long projectId) {
         return ResponseEntity.ok(projectMemberService.rejectInvite(projectId));
     }
 

@@ -15,7 +15,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-@FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
+@FieldDefaults(
+        makeFinal = true,
+        level = lombok.AccessLevel.PRIVATE
+)
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
 
@@ -29,6 +32,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User " , username));
+                .orElseThrow(() -> new ResourceNotFoundException("User ", username));
     }
 }

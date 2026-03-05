@@ -45,7 +45,8 @@ public class ProjectServiceImpl implements ProjectService {
 //        User owner = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User",
 //                userId.toString()));
 
-        User owner = userRepository.getReferenceById(userId);// It wont make a DB call immediately, it will return a proxy object. It will make a DB call only when we access any property of the user object. Since we are using the user object to set the project member, it will make a DB call at that time. So we can use getReferenceById to avoid unnecessary DB call if we are not accessing any property of the user object.
+        User owner = userRepository.getReferenceById(
+                userId);// It wont make a DB call immediately, it will return a proxy object. It will make a DB call only when we access any property of the user object. Since we are using the user object to set the project member, it will make a DB call at that time. So we can use getReferenceById to avoid unnecessary DB call if we are not accessing any property of the user object.
 
         Project project = Project.builder()
                 .name(request.name())

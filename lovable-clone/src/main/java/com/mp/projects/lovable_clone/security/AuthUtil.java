@@ -49,9 +49,9 @@ public class AuthUtil {
         return new JwtUserPrinciple(userId, username, new ArrayList<>());
     }
 
-    public Long getCurrentUserId(){
+    public Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication == null || !(authentication.getPrincipal() instanceof JwtUserPrinciple)){
+        if (authentication == null || !(authentication.getPrincipal() instanceof JwtUserPrinciple)) {
             throw new AuthenticationCredentialsNotFoundException("No authenticated user found");
         }
         JwtUserPrinciple userPrincipal =
