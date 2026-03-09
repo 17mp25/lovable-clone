@@ -32,7 +32,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
                     AND p.deletedAt IS NULL
                     AND EXISTS (
                         SELECT 1 FROM ProjectMember pm
-                        WHERE pm.id.projectId = projectId
+                        WHERE pm.id.projectId = :projectId
                         AND pm.id.userId = :userId
                     )
                     """
