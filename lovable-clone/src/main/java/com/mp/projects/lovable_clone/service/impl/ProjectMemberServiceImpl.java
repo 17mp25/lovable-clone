@@ -100,7 +100,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
                     projectMember);
         }
 
-        // Fresh invite
+        // Fresh invite a member
         ProjectMember newMember = ProjectMember.builder().id(projectMemberId)
                 .project(project).user(invitee).projectRole(request.role())
                 .inviteStatus(InviteStatus.PENDING).invitedAt(Instant.now())
