@@ -90,7 +90,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
                 throw new RuntimeException("User already a member");
             }
 
-            // REJECTED → re-invite
+            // REJECTED → re-invitee
             projectMember.setInviteStatus(InviteStatus.PENDING);
             projectMember.setInvitedAt(Instant.now());
             projectMember.setProjectRole(request.role());
